@@ -7,7 +7,6 @@ export default authMiddleware({
   publicRoutes: [
     "/api/uploadthing"
   ],
-  debug: true,
 });
 
 export const config = {
