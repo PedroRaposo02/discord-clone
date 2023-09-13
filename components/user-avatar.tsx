@@ -6,7 +6,7 @@ interface UserAvatarProps {
   className?: string;
 }
 
-const UserAvatar = ({
+export const UserAvatar = ({
   src,
   className: className
 } : UserAvatarProps) => {
@@ -25,4 +25,3 @@ const UserAvatar = ({
    );
 }
  
-export default UserAvatar;
