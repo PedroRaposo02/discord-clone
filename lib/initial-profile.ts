@@ -1,5 +1,6 @@
 import { currentUser, redirectToSignIn } from "@clerk/nextjs";
 import { db } from "@/lib/db";
+import { currentProfile } from "./current-profile";
 
 export const initialProfile = async () => {
   const user = await currentUser();
@@ -8,11 +9,7 @@ export const initialProfile = async () => {
     return redirectToSignIn();
   }
 
-  const profile = await db.profile.findUnique({
-    where: {
-      userId: user.id,
-    },
-  });  
+  const profile = currentProfile();  
 
   if (profile) {
     return profile;
