@@ -17,11 +17,9 @@ export async function PATCH(
       return new NextResponse("Server ID missing", { status: 400 });
     }
 
-    const serverId = params.serverId;
-
-    const server = db.server.update({
+    const server = await db.server.update({
       where: {
-        id: serverId,
+        id: params.serverId,
         profileId: {
           not: profile.id,
         },
