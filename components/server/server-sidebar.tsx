@@ -1,12 +1,29 @@
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
-import { Channel, ChannelType, Server } from "@prisma/client";
 import { redirect } from "next/navigation";
-import ServerHeader from "./server-header";
+import { Channel, ChannelType, MemberRole, Server } from "@prisma/client";
+import { Hash, Mic, ShieldAlert, ShieldCheck, Video } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { ScrollArea } from "@/components/ui/scroll-area";
+
+import ServerHeader from "./server-header";
+import ServerSearch from "./server-search";
+import ServerSection from "./server-section";
 
 interface ServerSidebarProps {
   serverId: string;
+}
+
+const iconMap = {
+  [ChannelType.TEXT]: <Hash className="mr-2 h-4 w-4" />,
+  [ChannelType.AUDIO]: <Mic className="mr-2 h-4 w-4" />,
+  [ChannelType.VIDEO]: <Video className="mr-2 h-4 w-4" />,
+};
+
+const roleIconMap = {
+  [MemberRole.GUEST]: null,
+  [MemberRole.MODERATOR]: <ShieldCheck className="mr-2 h-4 w-4 text-indigo-500" />,
+  [MemberRole.ADMIN]: <ShieldAlert className="mr-2 h-4 w-4 text-rose-500" />,
 }
 
 const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
@@ -64,26 +81,62 @@ const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
   return (
     <div className="flex flex-col h-full text-primary w-full dark:bg-[#2b2d31] bg-[#f2f3f5]">
       <ServerHeader server={server} role={role} />
-      <div className="gap-2 flex flex-col justify-center items-center">
-        <span className="text-orange-300">Text channels</span>
-        {textChannels?.map((channel) => (
-          <div key={channel.id}>{channel.name}</div>
-        ))}
-      </div>
-      <Separator />
-      <div className="gap-2 flex flex-col justify-center items-center">
-        <span className="text-orange-300">Audio channels</span>
-        {audioChannels?.map((channel) => (
-          <div key={channel.id}>{channel.name}</div>
-        ))}
-      </div>
-      <Separator />
-      <div className="gap-2 flex flex-col justify-center items-center">
-        <span className="text-orange-300">Video channels</span>
-        {videoChannels?.map((channel) => (
-          <div key={channel.id}>{channel.name}</div>
-        ))}
-      </div>
+      <ScrollArea className="flex-1 px-3">
+        <div className="mt-2">
+          <ServerSearch
+            data={[
+              {
+                label: "Text Channels",
+                type: "channel",
+                data: textChannels?.map((channel) => ({
+                  icon: iconMap[channel.type],
+                  name: channel.name,
+                  id: channel.id,
+                })),
+              },
+              {
+                label: "Voice Channels",
+                type: "channel",
+                data: audioChannels?.map((channel) => ({
+                  icon: iconMap[channel.type],
+                  name: channel.name,
+                  id: channel.id,
+                })),
+              },
+              {
+                label: "Video Channels",
+                type: "channel",
+                data: videoChannels?.map((channel) => ({
+                  icon: iconMap[channel.type],
+                  name: channel.name,
+                  id: channel.id,
+                })),
+              },
+              {
+                label: "Members",
+                type: "member",
+                data: members?.map((member) => ({
+                  icon: roleIconMap[member.role],
+                  name: member.profile.name,
+                  id: member.id,
+                })),
+              },
+            ]}
+          />
+        </div>
+        <Separator className="mt-2 bg-zinc-200 dark:bg-zinc-700 rounded-md" />
+        {!!textChannels?.length && (
+          <div className="mb-2">
+            <ServerSection
+              sectionType="channels"
+              label="Text Channels"
+              role={role}
+              channelType={ChannelType.TEXT}
+              server={server}
+            />
+          </div>
+        )}
+      </ScrollArea>
     </div>
   );
 };

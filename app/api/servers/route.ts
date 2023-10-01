@@ -26,12 +26,7 @@ export async function POST(req: Request) {
               name: "general",
               type: ChannelType.TEXT,
               profileId: profile.id,
-            },
-            {
-              name: "general",
-              type: ChannelType.AUDIO,
-              profileId: profile.id,
-            },
+            }
           ],
         },
         members: {

@@ -47,12 +47,13 @@ export const EditServerModal = () => {
     }
   })
 
+
   useEffect(() => {
-    if (server) {
+    if (server && isModalOpen) {
       form.setValue('name', server.name)
       form.setValue('imageUrl', server.imageUrl)
     }
-  }, [server, form]);
+  }, [server, form, isModalOpen]);
 
   const isLoading = form.formState.isSubmitting
 
@@ -68,13 +69,8 @@ export const EditServerModal = () => {
     }
   }
 
-  const handleClose = () => {
-    form.reset()
-    onClose()
-  }
-
   return (
-    <Dialog open={isModalOpen} onOpenChange={handleClose}>
+    <Dialog open={isModalOpen} onOpenChange={onClose}>
       <DialogContent className='bg-white text-black p-0 overflow-hidden'>
         <DialogHeader className='bg-primary-600 px-6 pt-8'>
           <DialogTitle className='text-2xl text-center font-bold'>
