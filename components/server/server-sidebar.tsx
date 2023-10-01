@@ -10,6 +10,7 @@ import ServerHeader from "./server-header";
 import ServerSearch from "./server-search";
 import ServerSection from "./server-section";
 import { ServerChannel } from "./server-channel";
+import ServerMember from "./server-member";
 
 interface ServerSidebarProps {
   serverId: string;
@@ -23,9 +24,11 @@ const iconMap = {
 
 const roleIconMap = {
   [MemberRole.GUEST]: null,
-  [MemberRole.MODERATOR]: <ShieldCheck className="mr-2 h-4 w-4 text-indigo-500" />,
+  [MemberRole.MODERATOR]: (
+    <ShieldCheck className="mr-2 h-4 w-4 text-indigo-500" />
+  ),
   [MemberRole.ADMIN]: <ShieldAlert className="mr-2 h-4 w-4 text-rose-500" />,
-}
+};
 
 const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
   const profile = await currentProfile();
@@ -76,7 +79,7 @@ const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
 
   const role = server?.members.find((member) => member.profileId === profile.id)
     ?.role;
-  
+
   /* To Change */
 
   return (
@@ -135,33 +138,37 @@ const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
               channelType={ChannelType.TEXT}
               server={server}
             />
-            {textChannels.map((channel) => (
-              <ServerChannel
-                key={channel.id}
-                channel={channel}
-                server={server}
-                role={role}
-              />
-            ))}
+            <div className="space-y-[2px]">
+              {textChannels.map((channel) => (
+                <ServerChannel
+                  key={channel.id}
+                  channel={channel}
+                  server={server}
+                  role={role}
+                />
+              ))}
+            </div>
           </div>
         )}
         {!!audioChannels?.length && (
           <div className="mb-2">
             <ServerSection
               sectionType="channels"
-              label="Audio Channels"
+              label="Voice Channels"
               role={role}
               channelType={ChannelType.AUDIO}
               server={server}
             />
-            {audioChannels.map((channel) => (
-              <ServerChannel
-                key={channel.id}
-                channel={channel}
-                server={server}
-                role={role}
-              />
-            ))}
+            <div className="space-y-[2px]">
+              {audioChannels.map((channel) => (
+                <ServerChannel
+                  key={channel.id}
+                  channel={channel}
+                  server={server}
+                  role={role}
+                />
+              ))}
+            </div>
           </div>
         )}
         {!!videoChannels?.length && (
@@ -173,14 +180,35 @@ const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
               channelType={ChannelType.VIDEO}
               server={server}
             />
-            {videoChannels.map((channel) => (
-              <ServerChannel
-                key={channel.id}
-                channel={channel}
-                server={server}
-                role={role}
-              />
-            ))}
+            <div className="space-y-[2px]">
+              {videoChannels.map((channel) => (
+                <ServerChannel
+                  key={channel.id}
+                  channel={channel}
+                  server={server}
+                  role={role}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+        {!!members?.length && (
+          <div className="mb-2">
+            <ServerSection
+              sectionType="members"
+              label="Members"
+              role={role}
+              server={server}
+            />
+            <div className="space-y-[2px]">
+              {members.map((member) => (
+                <ServerMember
+                  key={member.id}
+                  member={member}
+                  server={server}
+                />
+              ))}
+            </div>
           </div>
         )}
       </ScrollArea>

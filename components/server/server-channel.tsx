@@ -2,7 +2,7 @@
 
 import { Channel, ChannelType, MemberRole, Server } from "@prisma/client"
 import { Separator } from "@radix-ui/react-dropdown-menu";
-import { Edit, Hash, Mic, Video } from "lucide-react";
+import { Edit, Hash, Lock, Mic, Trash, Video } from "lucide-react";
 import { ActionToolTip } from "../action-tooltip";
 import { useModal } from "@/hooks/use-modal-store";
 import { useParams, useRouter } from "next/navigation";
@@ -44,17 +44,27 @@ export const ServerChannel = ({
         className={cn(
           "line-clamp-1 font-semibold text-sm text-zinc-500 group-hover:text-zinc-600 dark:text-zinc-400 dark:group-hover:text-zinc-300 transition",
           params?.channelId === channel.id &&
-            "text-primary dark:text-zinc-200 dark:group-hover:text-white"
+            "text-primary dark:text-zinc-200 dark:group-hover:text-white",
+          channel.name.length > 15 && role !== MemberRole.GUEST &&
+          "md:group-hover:w-[120px] md:group-hover:overflow-ellipsis md:group-hover:text-left"
         )}
       >
-        {channel.name}
+        {channel.name.length > 20
+          ? channel.name.slice(0, 20) + "..."
+          : channel.name}
       </p>
       {channel.name !== "general" && role !== MemberRole.GUEST && (
         <div className="ml-auto flex items-center gap-x-2">
           <ActionToolTip label="Edit">
-            <Edit className="w-4 h-4 text-zinc-500 dark:text-zinc-400" />
+            <Edit className="hidden group-hover:block w-4 h-4 text-zinc-500 dark:text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition" />
+          </ActionToolTip>
+          <ActionToolTip label="Delete">
+            <Trash className="hidden group-hover:block w-4 h-4 text-zinc-500 dark:text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition" />
           </ActionToolTip>
         </div>
+      )}
+      {channel.name === "general" && (
+        <Lock className="ml-auto w-4 h-4 text-zinc-500 dark:text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition" />
       )}
     </button>
   );

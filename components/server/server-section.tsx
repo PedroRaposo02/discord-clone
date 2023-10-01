@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { ServerWithMembersWithProfiles } from "@/types";
 import { ChannelType, MemberRole } from "@prisma/client";
@@ -6,7 +6,7 @@ import { ActionToolTip } from "../action-tooltip";
 import { Plus, Settings } from "lucide-react";
 import { useModal } from "@/hooks/use-modal-store";
 
-interface ServerSectionProps { 
+interface ServerSectionProps {
   label: string;
   role?: MemberRole;
   sectionType: "channels" | "members";
@@ -21,7 +21,6 @@ const ServerSection = ({
   channelType,
   server,
 }: ServerSectionProps) => {
-  
   const { onOpen } = useModal();
 
   return (
@@ -33,7 +32,7 @@ const ServerSection = ({
         <ActionToolTip label="Create Channel" side="top">
           <button
             className="text-zinc-500 hover:text-zinc-600 dark:text-zinc-400 dark:hover:text-zinc-300 transition"
-            onClick={() => onOpen("createChannel")}
+            onClick={() => onOpen("createChannel", { channelType })}
           >
             <Plus className="h-4 w-4" />
           </button>
@@ -51,6 +50,6 @@ const ServerSection = ({
       )}
     </div>
   );
-}
+};
 
-export default ServerSection
+export default ServerSection;
