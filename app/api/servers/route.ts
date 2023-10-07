@@ -5,6 +5,7 @@ import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
 import { ChannelType, MemberRole } from "@prisma/client";
 
+
 export async function POST(req: Request) {
   try {
     const { name, imageUrl } = await req.json();
@@ -40,12 +41,7 @@ export async function POST(req: Request) {
       },
     });
 
-    return new NextResponse(JSON.stringify(server), {
-      status: 201,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    return NextResponse.json(server);
   } catch (error) {
     console.error("[SERVERS_POST]", error);
     return new NextResponse("Internal Error", { status: 500 });

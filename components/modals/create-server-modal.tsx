@@ -3,7 +3,7 @@ import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 
 import {
   Dialog,
@@ -25,11 +25,24 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import FileUpload from '../file-upload'
 import { useModal } from '@/hooks/use-modal-store'
+import { Server } from '@prisma/client'
 
 const formSchema = z.object({
   name: z.string().nonempty({ message: 'Please enter a name' }),
   imageUrl: z.string().nonempty({ message: 'Please enter a image url' })
 })
+
+interface ServerResponse {
+  server: {
+    id: string;
+    name: string;
+    imageUrl: string;
+    inviteCode: string;
+    profileId: string;
+    createdAt: Date;
+    updatedAt: Date;
+  };
+}
 
 export const CreateServerModal = () => {
   const router = useRouter()
@@ -49,10 +62,13 @@ export const CreateServerModal = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.post('/api/servers', values)
+      const response = await axios.post("/api/servers", values);
 
+      const server : Server = response.data;
+      
       form.reset()
       router.refresh()
+      router.push(`/servers/${server?.id}`);
       onClose()
     } catch (err) {
       console.error(err)
