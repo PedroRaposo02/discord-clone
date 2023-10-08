@@ -6,10 +6,11 @@ import {
   DragDropContext,
   Draggable,
   DropResult,
-  Droppable
+  Droppable,
+  resetServerContext
 } from 'react-beautiful-dnd'
 import NavigationItem from './navigation-item'
-import {  useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ActionToolTip } from '../action-tooltip'
 import { cn } from '@/lib/utils'
 import Image from 'next/image'
@@ -23,11 +24,17 @@ const NavigationServerList = ({ servers }: NavigationServerListProps) => {
 
   const handleDragEnd = (result: DropResult) => {
     if (!result.destination) return
-    const items = Array.from(servers)
+
+    const items = Array.from(serversList)
     const [reorderedItem] = items.splice(result.source.index, 1)
     items.splice(result.destination.index, 0, reorderedItem)
+
     setServersList(items)
   }
+
+  useEffect(() => {
+    resetServerContext()
+  }, []);
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
@@ -40,13 +47,16 @@ const NavigationServerList = ({ servers }: NavigationServerListProps) => {
               {...provided.droppableProps}
             >
               {serversList.map((server, index) => (
-                <NavigationItem
+                <div
                   key={server.id}
-                  id={server.id}
-                  imageUrl={server.imageUrl}
-                  name={server.name}
-                  index={index}
-                />
+                >
+                  <NavigationItem
+                    id={server.id}
+                    imageUrl={server.imageUrl}
+                    name={server.name}
+                    index={index}
+                  />
+                </div>
               ))}
               {provided.placeholder}
             </div>
