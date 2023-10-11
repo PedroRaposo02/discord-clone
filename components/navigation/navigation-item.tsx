@@ -38,7 +38,9 @@ export default function NavigationItem({
         >
           <ActionToolTip side='right' align='center' label={name}>
             <div
-              onClick={onClick}
+              onClick={() => {
+                onClick()
+              }}
               className='group relative flex items-center cursor-pointer'
             >
               <div
