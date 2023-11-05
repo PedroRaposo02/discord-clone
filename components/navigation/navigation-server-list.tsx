@@ -1,61 +1,50 @@
-'use client'
+"use client";
 
-import { ScrollArea } from '@radix-ui/react-scroll-area'
-import { Server } from '@prisma/client'
+import { ScrollArea } from "@radix-ui/react-scroll-area";
+import { Server } from "@prisma/client";
 import {
   DragDropContext,
-  Draggable,
   DropResult,
   Droppable,
-  resetServerContext
-} from 'react-beautiful-dnd'
-import NavigationItem from './navigation-item'
-import { useEffect, useState } from 'react'
-import { ActionToolTip } from '../action-tooltip'
-import { cn } from '@/lib/utils'
-import Image from 'next/image'
+  resetServerContext,
+} from "react-beautiful-dnd";
+import NavigationItem from "./navigation-item";
+import { useEffect, useState } from "react";
 
 interface NavigationServerListProps {
-  servers: Server[]
+  servers: Server[];
 }
 
 const NavigationServerList = ({ servers }: NavigationServerListProps) => {
-  const [serversList, setServersList] = useState(servers)
+  const [serversList, setServersList] = useState(servers);
 
   const handleDragEnd = (result: DropResult) => {
-    if (!result.destination) return
+    if (!result.destination) return;
 
-    const items = Array.from(serversList)
-    const [reorderedItem] = items.splice(result.source.index, 1)
-    items.splice(result.destination.index, 0, reorderedItem)
+    const items = Array.from(serversList);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
 
-    setServersList(items)
-  }
+    setServersList(items);
+  };
 
   useEffect(() => {
-    resetServerContext()
-  }, []);
+    resetServerContext();
+  }, [servers]);
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
       <ScrollArea>
-        <Droppable droppableId='SERVERS' direction='vertical'>
+        <Droppable droppableId="SERVERS" direction="vertical">
           {(provided, snapshot) => (
             <div
-              className='space-y-2'
+              className="space-y-2"
               ref={provided.innerRef}
               {...provided.droppableProps}
             >
               {serversList.map((server, index) => (
-                <div
-                  key={server.id}
-                >
-                  <NavigationItem
-                    id={server.id}
-                    imageUrl={server.imageUrl}
-                    name={server.name}
-                    index={index}
-                  />
+                <div key={index}>
+                  <NavigationItem server={server} index={index} />
                 </div>
               ))}
               {provided.placeholder}
@@ -64,7 +53,7 @@ const NavigationServerList = ({ servers }: NavigationServerListProps) => {
         </Droppable>
       </ScrollArea>
     </DragDropContext>
-  )
-}
+  );
+};
 
-export default NavigationServerList
+export default NavigationServerList;
